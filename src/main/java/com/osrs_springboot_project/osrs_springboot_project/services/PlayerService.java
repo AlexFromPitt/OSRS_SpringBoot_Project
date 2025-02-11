@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_SKILL;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.PlayerNotFoundException;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.SkillNotFoundException;
+import com.osrs_springboot_project.osrs_springboot_project.exceptions.ValidationException;
 import com.osrs_springboot_project.osrs_springboot_project.models.Player;
 import com.osrs_springboot_project.osrs_springboot_project.models.Skill;
 import com.osrs_springboot_project.osrs_springboot_project.models.SkillResponse;
@@ -23,7 +24,8 @@ public class PlayerService {
     @Autowired
     PlayerRepository playerRepository;
 
-    public ResponseEntity<String> fetchAndSavePlayerData(String username) {
+    /* Player Services */
+    public Boolean fetchAndSavePlayerData(String username) {
         Player player = null;
         RestTemplate restTemplate = new RestTemplate();
         String url = OSRS_PLAYER_INFO_URL + username;
@@ -42,23 +44,32 @@ public class PlayerService {
                 player = new Player(username, skillList);
 
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Player with username:" + username + " was not found.");
+                return false;
             }
 
             this.playerRepository.save(player);
-            return ResponseEntity.ok("Player with username:" + username + " was found and saved to the database.");
+            return true;
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Player with username:" + username + " is already saved in the database.");
+            /* Saving this for future. If already exists, see if we need to update the data. (Stale) */
+            return true;
         }
     }
 
     public ResponseEntity<Player> getPlayerData(String username) {
-        Player player = this.playerRepository.findById(username)
-            .orElseThrow(() -> new PlayerNotFoundException(username));
-        return ResponseEntity.ok(player);
+        this.validateUsername(username);
+        
+        if (fetchAndSavePlayerData(username)) {
+            Player player = this.playerRepository.findById(username)
+                .orElseThrow(() -> new PlayerNotFoundException(username));
+            return ResponseEntity.ok(player);
+        } else {
+            throw new PlayerNotFoundException(username);
+        }
     }
 
     public ResponseEntity<String> deletePlayerData(String username) {
+        this.validateUsername(username);
+
         if (this.playerRepository.existsById(username)) {
             this.playerRepository.deleteById(username);
             return ResponseEntity.ok("Player with username: " + username + " was successfully removed from the database.");
@@ -67,18 +78,30 @@ public class PlayerService {
         }
     }
 
-    public ResponseEntity<SkillResponse> getPlayerSkillData(String username, OSRS_SKILL skillName) {
+    public ResponseEntity<SkillResponse> getPlayerSkillData(String username, String skillName) {
         Player player = this.playerRepository.findById(username)
             .orElseThrow(() -> new PlayerNotFoundException(username));
+        Skill skillData;
+
+        this.validateUsername(username);
         
-        if (player.getSkill(skillName) != null) {
-            return ResponseEntity.ok(new SkillResponse(username, player.getSkill(skillName)));
-        } else {
+        try {
+            skillData = player.getSkill(OSRS_SKILL.valueOf(skillName.toUpperCase()));
+            return ResponseEntity.ok(new SkillResponse(username, skillData));
+        } catch (IllegalArgumentException e) {
             throw new SkillNotFoundException(username, skillName);
         }
     }
 
-    public Skill buildSkill(OSRS_SKILL skillName, String[] skillData) {
+    /* Validation Functions */
+    private void validateUsername(String username) {
+        if (username.isEmpty()) {
+            throw new ValidationException("Username cannot be empty.");
+        }
+    }
+
+    /* Helper Functions */
+    private Skill buildSkill(OSRS_SKILL skillName, String[] skillData) {
         return Skill
             .builder()
             .skillName(skillName)
