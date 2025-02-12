@@ -2,7 +2,6 @@ package com.osrs_springboot_project.osrs_springboot_project.models;
 
 import lombok.Data;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -18,6 +17,8 @@ public class Player {
     @Id
     private String username;
 
+    private Skill overall;
+
     @Field("skills")
     private Map<OSRS_SKILL, Skill> skills;
 
@@ -28,7 +29,8 @@ public class Player {
         OSRS_SKILL[] skillNames = OSRS_SKILL.values();
 
         this.username = username;
-        for (int i = 0; i < skillNames.length; i++) {
+        this.overall = skills[0];
+        for (int i = 1; i < skillNames.length; i++) {
             this.skills.put(skillNames[i], skills[i]);
         }
     }

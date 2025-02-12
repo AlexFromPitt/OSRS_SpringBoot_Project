@@ -3,6 +3,8 @@ package com.osrs_springboot_project.osrs_springboot_project.models;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Comparator;
+
 import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_SKILL;
 
 import lombok.AllArgsConstructor;
@@ -20,5 +22,25 @@ public class Skill {
 
     public String toString() {
         return "Name: " + skillName + " Rank: " + rank + " Level: " + level + " XP: " + xp;
+    }
+
+    public static class SkillComparator implements Comparator<Skill> {
+        @Override
+        public int compare(Skill s1, Skill s2) {
+            if (s1.level > s2.level) {
+                return 1;
+            } else if (s1.level < s2.level) {
+                return -1;
+            }  else {
+                // The Skills are the same level. Check the Experience.
+                if (s1.xp > s2.xp) {
+                    return 1;
+                } else if (s1.xp < s2.xp) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        }
     }
 }

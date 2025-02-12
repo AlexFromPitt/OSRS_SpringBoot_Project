@@ -1,5 +1,9 @@
 package com.osrs_springboot_project.osrs_springboot_project.services;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +16,6 @@ import com.osrs_springboot_project.osrs_springboot_project.exceptions.SkillNotFo
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.ValidationException;
 import com.osrs_springboot_project.osrs_springboot_project.models.Player;
 import com.osrs_springboot_project.osrs_springboot_project.models.Skill;
-import com.osrs_springboot_project.osrs_springboot_project.models.SkillResponse;
 import com.osrs_springboot_project.osrs_springboot_project.repositories.PlayerRepository;
 
 @Service
@@ -25,46 +28,8 @@ public class PlayerService {
     PlayerRepository playerRepository;
 
     /* Player Services */
-    public Boolean fetchAndSavePlayerData(String username) {
-        Player player = null;
-        RestTemplate restTemplate = new RestTemplate();
-        String url = OSRS_PLAYER_INFO_URL + username;
-        OSRS_SKILL[] skillNames = OSRS_SKILL.values();
-        Skill[] skillList = new Skill[NUM_SKILLS];
-
-        if (!this.playerRepository.existsById(username)) {
-            try {
-                String response = restTemplate.getForObject(url, String.class);
-                String[] skills = response != null ? response.split("\n") : new String[0];
-
-                for (int i = 0; i < NUM_SKILLS && i < skills.length; i++) {
-                    String[] skillData = skills[i].split(",");
-                    skillList[i] = buildSkill(skillNames[i], skillData);
-                }
-                player = new Player(username, skillList);
-
-            } catch (Exception e) {
-                return false;
-            }
-
-            this.playerRepository.save(player);
-            return true;
-        } else {
-            /* Saving this for future. If already exists, see if we need to update the data. (Stale) */
-            return true;
-        }
-    }
-
     public ResponseEntity<Player> getPlayerData(String username) {
-        this.validateUsername(username);
-        
-        if (fetchAndSavePlayerData(username)) {
-            Player player = this.playerRepository.findById(username)
-                .orElseThrow(() -> new PlayerNotFoundException(username));
-            return ResponseEntity.ok(player);
-        } else {
-            throw new PlayerNotFoundException(username);
-        }
+        return ResponseEntity.ok(fetchPlayerData(username));
     }
 
     public ResponseEntity<String> deletePlayerData(String username) {
@@ -78,7 +43,7 @@ public class PlayerService {
         }
     }
 
-    public ResponseEntity<SkillResponse> getPlayerSkillData(String username, String skillName) {
+    public ResponseEntity<Skill> getPlayerSkillData(String username, String skillName) {
         Player player = this.playerRepository.findById(username)
             .orElseThrow(() -> new PlayerNotFoundException(username));
         Skill skillData;
@@ -87,10 +52,24 @@ public class PlayerService {
         
         try {
             skillData = player.getSkill(OSRS_SKILL.valueOf(skillName.toUpperCase()));
-            return ResponseEntity.ok(new SkillResponse(username, skillData));
+            return ResponseEntity.ok(skillData);
         } catch (IllegalArgumentException e) {
             throw new SkillNotFoundException(username, skillName);
         }
+    }
+
+    public ResponseEntity<Skill> getOverallSkillData(String username) {
+        return ResponseEntity.ok(fetchPlayerData(username).getOverall());
+    }
+
+    public ResponseEntity<List<Skill>> getPlayerTopSkills(String username, Integer numTopSkills) {
+        Player player = this.fetchPlayerData(username);
+        Collection<Skill> allSkillValues = player.getSkills().values();
+        List<Skill> allSkillsList = new ArrayList<>(allSkillValues);
+
+        allSkillsList.sort(new Skill.SkillComparator().reversed());
+
+        return ResponseEntity.ok(allSkillsList.subList(0, numTopSkills)); // start from 1 to skip Overall
     }
 
     /* Validation Functions */
@@ -110,4 +89,81 @@ public class PlayerService {
             .xp(Integer.parseInt(skillData[2]))
             .build();
     }
+
+    public Player fetchPlayerData(String username) {
+        Player player;
+        Boolean outdated = false; // Temp variable until outdated portion is implemented.
+
+        this.validateUsername(username);
+
+        // We need to determine if we need to fetch the player data from the server, or from the database.
+        // We fetch from the server, IF the username isnt found in the database, OR It has been X amount of time since the last update.
+        // Using Outdated until a timestamp chewcker is added.
+        if (this.playerRepository.existsById(username)) {
+            if (outdated) {
+                return fetchPlayerDataFromServer(username);
+            } else {
+                player = this.playerRepository.findById(username)
+                    .orElseThrow(() -> new PlayerNotFoundException(username));
+                return player;
+            }
+        } else {
+            return fetchPlayerDataFromServer(username);
+        }
+    }
+
+    public Player fetchPlayerDataFromServer(String username) {
+        Player player = null;
+        RestTemplate restTemplate = new RestTemplate();
+        String url = OSRS_PLAYER_INFO_URL + username;
+        OSRS_SKILL[] skillNames = OSRS_SKILL.values();
+        Skill[] skillList = new Skill[NUM_SKILLS];
+
+        try {
+            String response = restTemplate.getForObject(url, String.class);
+            String[] skills = response != null ? response.split("\n") : new String[0];
+
+            for (int i = 0; i < NUM_SKILLS && i < skills.length; i++) {
+                String[] skillData = skills[i].split(",");
+                skillList[i] = buildSkill(skillNames[i], skillData);
+            }
+            player = new Player(username, skillList);
+
+        } catch (Exception e) {
+            return player;
+        }
+
+        this.playerRepository.save(player);
+        return player;
+    }
+
+    // public Boolean fetchAndSavePlayerData(String username) {
+    //     Player player = null;
+    //     RestTemplate restTemplate = new RestTemplate();
+    //     String url = OSRS_PLAYER_INFO_URL + username;
+    //     OSRS_SKILL[] skillNames = OSRS_SKILL.values();
+    //     Skill[] skillList = new Skill[NUM_SKILLS];
+
+    //     if (!this.playerRepository.existsById(username)) {
+    //         try {
+    //             String response = restTemplate.getForObject(url, String.class);
+    //             String[] skills = response != null ? response.split("\n") : new String[0];
+
+    //             for (int i = 0; i < NUM_SKILLS && i < skills.length; i++) {
+    //                 String[] skillData = skills[i].split(",");
+    //                 skillList[i] = buildSkill(skillNames[i], skillData);
+    //             }
+    //             player = new Player(username, skillList);
+
+    //         } catch (Exception e) {
+    //             return false;
+    //         }
+
+    //         this.playerRepository.save(player);
+    //         return true;
+    //     } else {
+    //         /* Saving this for future. If already exists, see if we need to update the data. (Stale) */
+    //         return true;
+    //     }
+    // }
 }
