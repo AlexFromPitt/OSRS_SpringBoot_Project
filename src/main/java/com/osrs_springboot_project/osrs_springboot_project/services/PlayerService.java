@@ -60,7 +60,7 @@ public class PlayerService {
         }
     }
 
-    public ResponseEntity<Skill> getOverallSkillData(String username) {
+    public ResponseEntity<Skill> getOverallPlayerSkillData(String username) {
         return ResponseEntity.ok(fetchPlayerData(username).getOverall());
     }
 

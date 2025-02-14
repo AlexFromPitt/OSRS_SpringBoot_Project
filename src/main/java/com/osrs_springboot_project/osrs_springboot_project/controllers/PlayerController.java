@@ -42,7 +42,7 @@ public class PlayerController {
      */
     @GetMapping("/getPlayerData/{username}")
     public ResponseEntity<Player> getPlayerData(@PathVariable String username) {
-        return playerService.getPlayerData(username);
+        return this.playerService.getPlayerData(username);
     }
 
     /**
@@ -65,7 +65,7 @@ public class PlayerController {
     public ResponseEntity<Skill> getPlayerSkillData(
         @PathVariable String username,
         @PathVariable String skillName) {
-        return playerService.getPlayerSkillData(username, skillName);
+        return this.playerService.getPlayerSkillData(username, skillName);
     }
 
     /**
@@ -83,10 +83,10 @@ public class PlayerController {
      * #
      * #################################################################################
      */
-    @GetMapping("/getOverallSkillData/{username}")
-    public ResponseEntity<Skill> getOverallSkillData(
+    @GetMapping("/getOverallPlayerSkillData/{username}")
+    public ResponseEntity<Skill> getOverallPlayerSkillData(
         @PathVariable String username) {
-        return playerService.getOverallSkillData(username);
+        return this.playerService.getOverallPlayerSkillData(username);
     }
 
     /**
@@ -107,10 +107,10 @@ public class PlayerController {
      * #################################################################################
      */
     @GetMapping("/getTopSkillData/{username}/{numTopSkills}")
-    public ResponseEntity<List<Skill>> getTopSkillData(
+    public ResponseEntity<List<Skill>> getAllPlayersSingleSkillData(
         @PathVariable String username,
         @PathVariable Integer numTopSkills) {
-        return playerService.getPlayerTopSkills(username, numTopSkills);
+        return this.playerService.getPlayerTopSkills(username, numTopSkills);
     }
 
     /**
@@ -130,6 +130,6 @@ public class PlayerController {
      */
     @DeleteMapping("/deletePlayerData/{username}")
     public ResponseEntity<String> deletePlayerData(@PathVariable String username) {
-        return playerService.deletePlayerData(username);
+        return this.playerService.deletePlayerData(username);
     }
 }
