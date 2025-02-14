@@ -2,6 +2,7 @@ package com.osrs_springboot_project.osrs_springboot_project.models;
 
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -22,6 +23,9 @@ public class Player {
     @Field("skills")
     private Map<OSRS_SKILL, Skill> skills;
 
+    @Field("lastUpdate")
+    private Instant lastUpdate;
+
     public Player() {}
 
     public Player(String username, Skill[] skills) {
@@ -33,6 +37,7 @@ public class Player {
         for (int i = 1; i < skillNames.length; i++) {
             this.skills.put(skillNames[i], skills[i]);
         }
+        this.lastUpdate = Instant.now();
     }
 
     public Skill getSkill(OSRS_SKILL skillName){

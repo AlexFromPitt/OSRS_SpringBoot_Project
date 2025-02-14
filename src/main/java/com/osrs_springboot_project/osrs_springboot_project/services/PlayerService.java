@@ -1,5 +1,7 @@
 package com.osrs_springboot_project.osrs_springboot_project.services;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -92,21 +94,15 @@ public class PlayerService {
 
     public Player fetchPlayerData(String username) {
         Player player;
-        Boolean outdated = false; // Temp variable until outdated portion is implemented.
 
         this.validateUsername(username);
 
-        // We need to determine if we need to fetch the player data from the server, or from the database.
-        // We fetch from the server, IF the username isnt found in the database, OR It has been X amount of time since the last update.
-        // Using Outdated until a timestamp chewcker is added.
         if (this.playerRepository.existsById(username)) {
-            if (outdated) {
-                return fetchPlayerDataFromServer(username);
-            } else {
-                player = this.playerRepository.findById(username)
+            player = this.playerRepository.findById(username)
                     .orElseThrow(() -> new PlayerNotFoundException(username));
-                return player;
-            }
+            
+            if (this.isDataOutdated(player.getLastUpdate())) return fetchPlayerDataFromServer(username);
+            else return player;
         } else {
             return fetchPlayerDataFromServer(username);
         }
@@ -137,33 +133,13 @@ public class PlayerService {
         return player;
     }
 
-    // public Boolean fetchAndSavePlayerData(String username) {
-    //     Player player = null;
-    //     RestTemplate restTemplate = new RestTemplate();
-    //     String url = OSRS_PLAYER_INFO_URL + username;
-    //     OSRS_SKILL[] skillNames = OSRS_SKILL.values();
-    //     Skill[] skillList = new Skill[NUM_SKILLS];
-
-    //     if (!this.playerRepository.existsById(username)) {
-    //         try {
-    //             String response = restTemplate.getForObject(url, String.class);
-    //             String[] skills = response != null ? response.split("\n") : new String[0];
-
-    //             for (int i = 0; i < NUM_SKILLS && i < skills.length; i++) {
-    //                 String[] skillData = skills[i].split(",");
-    //                 skillList[i] = buildSkill(skillNames[i], skillData);
-    //             }
-    //             player = new Player(username, skillList);
-
-    //         } catch (Exception e) {
-    //             return false;
-    //         }
-
-    //         this.playerRepository.save(player);
-    //         return true;
-    //     } else {
-    //         /* Saving this for future. If already exists, see if we need to update the data. (Stale) */
-    //         return true;
-    //     }
-    // }
+    private boolean isDataOutdated(Instant lastUpdate) {
+        if (lastUpdate == null) {
+            return true;
+        }
+        // Check if more than 1 day has passed since `lastUpdate`
+        Instant now = Instant.now();
+        Duration duration = Duration.between(lastUpdate, now);
+        return duration.toDays() > 1;
+    }
 }
