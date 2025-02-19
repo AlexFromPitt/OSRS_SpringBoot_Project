@@ -5,4 +5,8 @@ public class SkillNotFoundException extends RuntimeException {
     public SkillNotFoundException(String username, String skillName) {
         super("Could not find " + skillName + " for user: " + username);
     }
+
+    public SkillNotFoundException(String skillName) {
+        super("Could not find " + skillName + " Skill Data.");
+    }
 }

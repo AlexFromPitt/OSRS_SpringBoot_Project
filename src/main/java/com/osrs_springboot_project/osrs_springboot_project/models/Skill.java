@@ -21,7 +21,7 @@ public class Skill {
     private Integer xp;
 
     public String toString() {
-        return "Name: " + skillName + " Rank: " + rank + " Level: " + level + " XP: " + xp;
+        return "Name: " + this.skillName + " Rank: " + this.rank + " Level: " + this.level + " XP: " + this.xp;
     }
 
     public static class SkillComparator implements Comparator<Skill> {

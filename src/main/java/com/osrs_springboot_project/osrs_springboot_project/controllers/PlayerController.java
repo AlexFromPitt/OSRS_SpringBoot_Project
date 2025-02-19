@@ -2,6 +2,9 @@ package com.osrs_springboot_project.osrs_springboot_project.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_SKILL;
+import com.osrs_springboot_project.osrs_springboot_project.exceptions.PlayerNotFoundException;
+import com.osrs_springboot_project.osrs_springboot_project.exceptions.SkillNotFoundException;
 import com.osrs_springboot_project.osrs_springboot_project.models.Player;
 import com.osrs_springboot_project.osrs_springboot_project.models.Skill;
 import com.osrs_springboot_project.osrs_springboot_project.services.PlayerService;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -23,7 +27,6 @@ public class PlayerController {
 
     @Autowired
     PlayerService playerService;
-
 
     /**
      * #################################################################################
@@ -42,7 +45,12 @@ public class PlayerController {
      */
     @GetMapping("/getPlayerData/{username}")
     public ResponseEntity<Player> getPlayerData(@PathVariable String username) {
-        return this.playerService.getPlayerData(username);
+        Player player = this.playerService.getPlayerData(username);
+        if (player != null) {
+            return ResponseEntity.ok(player);
+        } else {
+            throw new PlayerNotFoundException(username);
+        }
     }
 
     /**
@@ -65,12 +73,17 @@ public class PlayerController {
     public ResponseEntity<Skill> getPlayerSkillData(
         @PathVariable String username,
         @PathVariable String skillName) {
-        return this.playerService.getPlayerSkillData(username, skillName);
+        Skill skill = this.playerService.getPlayerSkillData(username, skillName);
+        if (skill != null) {
+            return ResponseEntity.ok(skill);
+        } else {
+            throw new SkillNotFoundException(username, skillName);
+        }
     }
 
     /**
      * #################################################################################
-     * # Function Name: getOverallSkillData
+     * # Function Name: getOverallPlayerSkillData
      * # Description: 
      * #   GET Request function that is responsible for getting an Old School Runescape
      * #   player's Overall Skill data.
@@ -86,12 +99,17 @@ public class PlayerController {
     @GetMapping("/getOverallPlayerSkillData/{username}")
     public ResponseEntity<Skill> getOverallPlayerSkillData(
         @PathVariable String username) {
-        return this.playerService.getOverallPlayerSkillData(username);
+        Skill overall = this.playerService.getOverallPlayerSkillData(username);
+        if (overall != null) {
+            return ResponseEntity.ok(overall);
+        } else{
+            throw new SkillNotFoundException(username, OSRS_SKILL.OVERALL.toString());
+        }
     }
 
     /**
      * #################################################################################
-     * # Function Name: getTopSkillData
+     * # Function Name: getPlayerTopSkillsData
      * # Description: 
      * #   GET Request function that is responsible for getting an Old School Runescape
      * #   player's Top Skills. Top Skills means Skills with the Highest Level/Experience
@@ -106,16 +124,21 @@ public class PlayerController {
      * #
      * #################################################################################
      */
-    @GetMapping("/getTopSkillData/{username}/{numTopSkills}")
-    public ResponseEntity<List<Skill>> getAllPlayersSingleSkillData(
+    @GetMapping("/getPlayerTopSkillsData/{username}/{numTopSkills}")
+    public ResponseEntity<List<Skill>> getPlayerTopSkillsData(
         @PathVariable String username,
         @PathVariable Integer numTopSkills) {
-        return this.playerService.getPlayerTopSkills(username, numTopSkills);
+        List<Skill> skillList = this.playerService.getPlayerTopSkills(username, numTopSkills);
+        if (skillList != null) {
+            return ResponseEntity.ok(skillList);
+        } else {
+            throw new PlayerNotFoundException(username);
+        }
     }
 
     /**
      * #################################################################################
-     * # Function Name: getTopSkillData
+     * # Function Name: deletePlayerData
      * # Description: 
      * #   DELETE Request function that is responsible for deleting the Player data
      * #   associated to the username from the database.
@@ -130,6 +153,7 @@ public class PlayerController {
      */
     @DeleteMapping("/deletePlayerData/{username}")
     public ResponseEntity<String> deletePlayerData(@PathVariable String username) {
-        return this.playerService.deletePlayerData(username);
+        if (this.playerService.deletePlayerData(username)) return ResponseEntity.ok("Player with username: " + username + " was successfully removed from the database.");
+        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Player with username: " + username + " was not found in the database.");
     }
 }

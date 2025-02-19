@@ -35,6 +35,6 @@ public enum OSRS_SKILL {
     }
 
     public String getSkillName() {
-        return skillName;
+        return this.skillName;
     }
 }

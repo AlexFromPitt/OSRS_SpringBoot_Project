@@ -7,15 +7,15 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_ACTIVITIES;
 import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_SKILL;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.PlayerNotFoundException;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.SkillNotFoundException;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.ValidationException;
+import com.osrs_springboot_project.osrs_springboot_project.models.Activity;
 import com.osrs_springboot_project.osrs_springboot_project.models.Player;
 import com.osrs_springboot_project.osrs_springboot_project.models.Skill;
 import com.osrs_springboot_project.osrs_springboot_project.repositories.PlayerRepository;
@@ -30,22 +30,20 @@ public class PlayerService {
     PlayerRepository playerRepository;
 
     /* Player Services */
-    public ResponseEntity<Player> getPlayerData(String username) {
-        return ResponseEntity.ok(fetchPlayerData(username));
+    public Player getPlayerData(String username) {
+        return fetchPlayerData(username);
     }
 
-    public ResponseEntity<String> deletePlayerData(String username) {
+    public Boolean deletePlayerData(String username) {
         this.validateUsername(username);
 
         if (this.playerRepository.existsById(username)) {
             this.playerRepository.deleteById(username);
-            return ResponseEntity.ok("Player with username: " + username + " was successfully removed from the database.");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Player with username: " + username + " was not found in the database.");
-        }
+            return true;
+        } else return false;
     }
 
-    public ResponseEntity<Skill> getPlayerSkillData(String username, String skillName) {
+    public Skill getPlayerSkillData(String username, String skillName) {
         Player player = this.playerRepository.findById(username)
             .orElseThrow(() -> new PlayerNotFoundException(username));
         Skill skillData;
@@ -54,24 +52,24 @@ public class PlayerService {
         
         try {
             skillData = player.getSkill(OSRS_SKILL.valueOf(skillName.toUpperCase()));
-            return ResponseEntity.ok(skillData);
+            return skillData;
         } catch (IllegalArgumentException e) {
             throw new SkillNotFoundException(username, skillName);
         }
     }
 
-    public ResponseEntity<Skill> getOverallPlayerSkillData(String username) {
-        return ResponseEntity.ok(fetchPlayerData(username).getOverall());
+    public Skill getOverallPlayerSkillData(String username) {
+        return fetchPlayerData(username).getOverall();
     }
 
-    public ResponseEntity<List<Skill>> getPlayerTopSkills(String username, Integer numTopSkills) {
-        Player player = this.fetchPlayerData(username);
+    public List<Skill> getPlayerTopSkills(String username, Integer numTopSkills) {
+        Player player = this.getPlayerData(username);
         Collection<Skill> allSkillValues = player.getSkills().values();
         List<Skill> allSkillsList = new ArrayList<>(allSkillValues);
 
         allSkillsList.sort(new Skill.SkillComparator().reversed());
 
-        return ResponseEntity.ok(allSkillsList.subList(0, numTopSkills)); // start from 1 to skip Overall
+        return allSkillsList.subList(0, numTopSkills);
     }
 
     /* Validation Functions */
@@ -90,6 +88,16 @@ public class PlayerService {
             .level(Short.parseShort(skillData[1]))
             .xp(Integer.parseInt(skillData[2]))
             .build();
+    }
+
+    public Activity buildActivity(OSRS_ACTIVITIES activityName, String[] activityData) {
+        return Activity
+        .builder()
+        .name(activityName)
+        .rank(Integer.parseInt(activityData[0]))
+        .count(Integer.parseInt(activityData[1]))
+        .build();
+
     }
 
     public Player fetchPlayerData(String username) {
@@ -113,16 +121,29 @@ public class PlayerService {
         RestTemplate restTemplate = new RestTemplate();
         String url = OSRS_PLAYER_INFO_URL + username;
         OSRS_SKILL[] skillNames = OSRS_SKILL.values();
+        OSRS_ACTIVITIES[] activityNames = OSRS_ACTIVITIES.values();
         Skill[] skillList = new Skill[NUM_SKILLS];
+        Activity[] activityList = new Activity[activityNames.length];
+        int idx = 0; // Will be used to maintain index of playerData.
 
         try {
             String response = restTemplate.getForObject(url, String.class);
-            String[] skills = response != null ? response.split("\n") : new String[0];
+            String[] playerData = response != null ? response.split("\n") : new String[0];
 
-            for (int i = 0; i < NUM_SKILLS && i < skills.length; i++) {
-                String[] skillData = skills[i].split(",");
+            // Loop through the Skill Data first.
+            for (int i = 0; i < skillNames.length; i++) {
+                String[] skillData = playerData[idx].split(",");
                 skillList[i] = buildSkill(skillNames[i], skillData);
+                idx++;
             }
+
+            // Loop through the Activities
+            for (int i=0; i < activityNames.length; i++) {
+                String[] activityData = playerData[idx++].split(",");
+                activityList[i] = buildActivity(activityNames[i], activityData);
+                System.out.println(activityList[i].toString());
+            }
+
             player = new Player(username, skillList);
 
         } catch (Exception e) {

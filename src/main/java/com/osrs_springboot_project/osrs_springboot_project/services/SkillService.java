@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +17,7 @@ public class SkillService {
     @Autowired
     PlayerRepository playerRepository;
 
-    public ResponseEntity<List<SkillResponse>> getSkillRanks(String skillName) {
+    public List<SkillResponse> getSkillRanks(String skillName) {
         List<Player> playerList = this.playerRepository.findAll();
         List<SkillResponse> skillRanks = new ArrayList<>();
 
@@ -28,6 +27,6 @@ public class SkillService {
                 player.getSkill(OSRS_SKILL.valueOf(skillName.toUpperCase()))));
         }
 
-        return ResponseEntity.ok(skillRanks);
+        return skillRanks;
     }
 }
