@@ -1,5 +1,6 @@
 package com.osrs_springboot_project.osrs_springboot_project.models;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
@@ -18,4 +19,15 @@ public class Activities {
 
     @Field("activities")
     private Map<OSRS_ACTIVITIES, Activity> activities;
+
+    public Activities() {}
+
+    public Activities(String username, Map<OSRS_ACTIVITIES, Activity> activities) {
+        this.username = username;
+        this.activities = activities;
+    }
+
+    public Activity getActivity(OSRS_ACTIVITIES activityName){
+        return this.activities.get(activityName);
+    }
 }

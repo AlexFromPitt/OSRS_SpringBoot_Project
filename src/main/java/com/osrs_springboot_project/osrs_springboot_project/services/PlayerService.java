@@ -15,10 +15,16 @@ import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_SKILL;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.PlayerNotFoundException;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.SkillNotFoundException;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.ValidationException;
+import com.osrs_springboot_project.osrs_springboot_project.models.Activities;
 import com.osrs_springboot_project.osrs_springboot_project.models.Activity;
 import com.osrs_springboot_project.osrs_springboot_project.models.Player;
 import com.osrs_springboot_project.osrs_springboot_project.models.Skill;
+import com.osrs_springboot_project.osrs_springboot_project.models.Skills;
+import com.osrs_springboot_project.osrs_springboot_project.models.Username;
+import com.osrs_springboot_project.osrs_springboot_project.repositories.ActivityRepository;
 import com.osrs_springboot_project.osrs_springboot_project.repositories.PlayerRepository;
+import com.osrs_springboot_project.osrs_springboot_project.repositories.SkillRepository;
+import com.osrs_springboot_project.osrs_springboot_project.repositories.UsernameRepository;
 
 @Service
 public class PlayerService {
@@ -37,21 +43,20 @@ public class PlayerService {
     public Boolean deletePlayerData(String username) {
         this.validateUsername(username);
 
-        if (this.playerRepository.existsById(username)) {
-            this.playerRepository.deleteById(username);
+        if (this.playerRepository.doesPlayerExist(username)) {
+            this.playerRepository.deletePlayer(username);
             return true;
         } else return false;
     }
 
     public Skill getPlayerSkillData(String username, String skillName) {
-        Player player = this.playerRepository.findById(username)
-            .orElseThrow(() -> new PlayerNotFoundException(username));
-        Skill skillData;
-
         this.validateUsername(username);
+
+        Skills skills = this.playerRepository.getPlayerSkills(username);
+        Skill skillData;
         
         try {
-            skillData = player.getSkill(OSRS_SKILL.valueOf(skillName.toUpperCase()));
+            skillData = skills.getSkill(OSRS_SKILL.valueOf(skillName.toUpperCase()));
             return skillData;
         } catch (IllegalArgumentException e) {
             throw new SkillNotFoundException(username, skillName);
@@ -101,16 +106,13 @@ public class PlayerService {
     }
 
     public Player fetchPlayerData(String username) {
-        Player player;
-
         this.validateUsername(username);
 
-        if (this.playerRepository.existsById(username)) {
-            player = this.playerRepository.findById(username)
-                    .orElseThrow(() -> new PlayerNotFoundException(username));
+        if (this.playerRepository.doesPlayerExist(username)) {
+            Username usernameData = this.playerRepository.getUsernameMetadata(username);
             
-            if (this.isDataOutdated(player.getLastUpdate())) return fetchPlayerDataFromServer(username);
-            else return player;
+            if (this.isDataOutdated(usernameData.getLastUpdate())) return fetchPlayerDataFromServer(username);
+            else return this.buildPlayerFromDB(username);
         } else {
             return fetchPlayerDataFromServer(username);
         }
@@ -141,17 +143,25 @@ public class PlayerService {
             for (int i=0; i < activityNames.length; i++) {
                 String[] activityData = playerData[idx++].split(",");
                 activityList[i] = buildActivity(activityNames[i], activityData);
-                System.out.println(activityList[i].toString());
             }
 
-            player = new Player(username, skillList);
+            // Create entire Player object to return to the Front End.
+            player = new Player(username, skillList, activityList);
+
+            this.playerRepository.savePlayer(player);
 
         } catch (Exception e) {
             return player;
         }
 
-        this.playerRepository.save(player);
         return player;
+    }
+
+    private Player buildPlayerFromDB(String username) {
+        Skills skills = this.playerRepository.getPlayerSkills(username);
+        Activities activities = this.playerRepository.getPlayerActivities(username);
+        
+        return new Player(username, skills.getOverall(), skills.getSkills(), activities.getActivities());
     }
 
     private boolean isDataOutdated(Instant lastUpdate) {

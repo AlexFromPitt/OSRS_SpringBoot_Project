@@ -1,9 +1,9 @@
 package com.osrs_springboot_project.osrs_springboot_project.services;
 
 import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_SKILL;
-import com.osrs_springboot_project.osrs_springboot_project.models.Player;
 import com.osrs_springboot_project.osrs_springboot_project.models.SkillResponse;
-import com.osrs_springboot_project.osrs_springboot_project.repositories.PlayerRepository;
+import com.osrs_springboot_project.osrs_springboot_project.models.Skills;
+import com.osrs_springboot_project.osrs_springboot_project.repositories.SkillRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,16 +15,16 @@ import org.springframework.stereotype.Service;
 public class SkillService {
 
     @Autowired
-    PlayerRepository playerRepository;
+    SkillRepository skillRepository;
 
     public List<SkillResponse> getSkillRanks(String skillName) {
-        List<Player> playerList = this.playerRepository.findAll();
+        List<Skills> skillsList = this.skillRepository.findAll();
         List<SkillResponse> skillRanks = new ArrayList<>();
 
-        for (Player player : playerList) {
+        for (Skills skills : skillsList) {
             skillRanks.add(new SkillResponse(
-                player.getUsername(), 
-                player.getSkill(OSRS_SKILL.valueOf(skillName.toUpperCase()))));
+                skills.getUsername(), 
+                skills.getSkill(OSRS_SKILL.valueOf(skillName.toUpperCase()))));
         }
 
         return skillRanks;
