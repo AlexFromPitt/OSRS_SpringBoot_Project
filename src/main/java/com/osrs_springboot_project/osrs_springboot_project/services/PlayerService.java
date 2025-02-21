@@ -12,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_ACTIVITIES;
 import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_SKILL;
-import com.osrs_springboot_project.osrs_springboot_project.exceptions.PlayerNotFoundException;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.SkillNotFoundException;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.ValidationException;
 import com.osrs_springboot_project.osrs_springboot_project.models.Activities;
@@ -21,10 +20,7 @@ import com.osrs_springboot_project.osrs_springboot_project.models.Player;
 import com.osrs_springboot_project.osrs_springboot_project.models.Skill;
 import com.osrs_springboot_project.osrs_springboot_project.models.Skills;
 import com.osrs_springboot_project.osrs_springboot_project.models.Username;
-import com.osrs_springboot_project.osrs_springboot_project.repositories.ActivityRepository;
 import com.osrs_springboot_project.osrs_springboot_project.repositories.PlayerRepository;
-import com.osrs_springboot_project.osrs_springboot_project.repositories.SkillRepository;
-import com.osrs_springboot_project.osrs_springboot_project.repositories.UsernameRepository;
 
 @Service
 public class PlayerService {
@@ -72,7 +68,7 @@ public class PlayerService {
         Collection<Skill> allSkillValues = player.getSkills().values();
         List<Skill> allSkillsList = new ArrayList<>(allSkillValues);
 
-        allSkillsList.sort(new Skill.SkillComparator().reversed());
+        allSkillsList.sort(new Skill.SkillComparator());
 
         return allSkillsList.subList(0, numTopSkills);
     }

@@ -26,7 +26,19 @@ public class SkillController {
         if (skillsList != null) {
             return ResponseEntity.ok(skillsList);
         } else {
-            throw new SkillNotFoundException(skillName, skillName);
+            throw new SkillNotFoundException(skillName);
+        }
+    }
+
+    @GetMapping("/getTopSkillRanks/{skillName}/{topNumber}")
+    public ResponseEntity<List<SkillResponse>> getTopSkillRanks(
+        @PathVariable String skillName,
+        @PathVariable Integer topNumber) {
+        List<SkillResponse> skillsList = this.skillService.getTopSkillRanks(skillName, topNumber);
+        if (skillsList != null) {
+            return ResponseEntity.ok(skillsList);
+        } else {
+            throw new SkillNotFoundException(skillName);
         }
     }
 }

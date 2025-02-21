@@ -26,7 +26,14 @@ public class SkillService {
                 skills.getUsername(), 
                 skills.getSkill(OSRS_SKILL.valueOf(skillName.toUpperCase()))));
         }
-
+        skillRanks.sort(new SkillResponse.SkillResponseComparator());
+        
         return skillRanks;
+    }
+
+    public List<SkillResponse> getTopSkillRanks(String skillName, Integer topNumber) {
+        List<SkillResponse> skillRanks = this.getSkillRanks(skillName);
+
+        return skillRanks.subList(0, topNumber);
     }
 }
