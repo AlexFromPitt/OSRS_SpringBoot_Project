@@ -1,0 +1,300 @@
+{
+	"info": {
+		"_postman_id": "43a44096-d37f-4c3a-b089-4970afb1db26",
+		"name": "OSRS_REST_API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41713442"
+	},
+	"item": [
+		{
+			"name": "player",
+			"item": [
+				{
+					"name": "getPlayerData",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/player/getPlayerData/{{username}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"player",
+								"getPlayerData",
+								"{{username}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPlayerSkillData",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/player/getPlayerSkillData/{{username}}/{{skillname}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"player",
+								"getPlayerSkillData",
+								"{{username}}",
+								"{{skillname}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePlayerData",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/player/deletePlayerData/{{username}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"player",
+								"deletePlayerData",
+								"{{username}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOverallPlayerSkillData",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/player/getOverallPlayerSkillData/{{username}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"player",
+								"getOverallPlayerSkillData",
+								"{{username}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPlayerTopSkillsData",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/player/getPlayerTopSkillsData/{{username}}/{{numTopSkills}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"player",
+								"getPlayerTopSkillsData",
+								"{{username}}",
+								"{{numTopSkills}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "skill",
+			"item": [
+				{
+					"name": "getSkillRanks",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "getTopSkillRanks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/skill/getTopSkillRanks/{{skillName}}/{{topNumber}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"skill",
+								"getTopSkillRanks",
+								"{{skillName}}",
+								"{{topNumber}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getSkillRanksGreaterThanLevel",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/skill/getSkillRanksGreaterThanLevel/{{skillName}}/{{level}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"skill",
+								"getSkillRanksGreaterThanLevel",
+								"{{skillName}}",
+								"{{level}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "activity",
+			"item": [
+				{
+					"name": "getActivityRanks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/activity/getActivityRanks/{{activityName}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"activity",
+								"getActivityRanks",
+								"{{activityName}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTopActivityRanks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/activity/getTopActivityRanks/{{activityName}}/{{topNumber}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"activity",
+								"getTopActivityRanks",
+								"{{activityName}}",
+								"{{topNumber}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getActivityRanksGreaterThanCount",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/activity/getActivityRanksGreaterThanCount/{{activityName}}/{{count}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"activity",
+								"getActivityRanksGreaterThanCount",
+								"{{activityName}}",
+								"{{count}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "username",
+			"value": "LostDankMeme",
+			"type": "default"
+		},
+		{
+			"key": "skillName",
+			"value": "Hitpoints",
+			"type": "default"
+		},
+		{
+			"key": "numTopSkills",
+			"value": "3",
+			"type": "string"
+		},
+		{
+			"key": "topNumber",
+			"value": "3",
+			"type": "string"
+		},
+		{
+			"key": "level",
+			"value": "85",
+			"type": "string"
+		},
+		{
+			"key": "activityName",
+			"value": "Hard_Clues",
+			"type": "string"
+		},
+		{
+			"key": "count",
+			"value": "100",
+			"type": "string"
+		}
+	]
+}

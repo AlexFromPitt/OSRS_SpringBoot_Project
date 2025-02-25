@@ -36,4 +36,17 @@ public class ActivityService {
 
         return activityRanks.subList(0, topNumber);
     }
+
+    public List<ActivityResponse> getActivityRanksGreaterThanCount(String activityName, Integer count) {
+        List<ActivityResponse> activityRanks = this.getActivityRanks(activityName);
+        Integer num = 0;
+
+        for (ActivityResponse activityResponse : activityRanks) {
+            if (activityResponse.getActivity().getCount() >= count) {
+                num++;
+            }
+        }
+
+        return activityRanks.subList(0, num);
+    }
 }

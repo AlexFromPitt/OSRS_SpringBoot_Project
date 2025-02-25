@@ -41,4 +41,16 @@ public class ActivityController {
             throw new ActivityNotFoundException(activityName);
         }
     }
+
+    @GetMapping("/getActivityRanksGreaterThanCount/{activityName}/{count}")
+    public ResponseEntity<List<ActivityResponse>> getActivityRanksGreaterThanCount(
+        @PathVariable String activityName,
+        @PathVariable Integer count) {
+        List<ActivityResponse> activitiesList = this.activityService.getActivityRanksGreaterThanCount(activityName, count);
+        if (activitiesList != null) {
+            return ResponseEntity.ok(activitiesList);
+        } else {
+            throw new ActivityNotFoundException(activityName);
+        }
+    }
 }

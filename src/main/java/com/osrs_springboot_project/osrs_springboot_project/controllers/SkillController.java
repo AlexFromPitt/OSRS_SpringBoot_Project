@@ -41,4 +41,16 @@ public class SkillController {
             throw new SkillNotFoundException(skillName);
         }
     }
+
+    @GetMapping("/getSkillRanksGreaterThanLevel/{skillName}/{level}")
+    public ResponseEntity<List<SkillResponse>> getSkillRanksGreaterThanLevel(
+        @PathVariable String skillName,
+        @PathVariable Integer level) {
+        List<SkillResponse> skillsList = this.skillService.getSkillRanksGreaterThanLevel(skillName, level);
+        if (skillsList != null) {
+            return ResponseEntity.ok(skillsList);
+        } else {
+            throw new SkillNotFoundException(skillName);
+        }
+    }
 }

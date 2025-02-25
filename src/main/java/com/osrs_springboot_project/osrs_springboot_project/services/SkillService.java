@@ -1,6 +1,7 @@
 package com.osrs_springboot_project.osrs_springboot_project.services;
 
 import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_SKILL;
+import com.osrs_springboot_project.osrs_springboot_project.models.ActivityResponse;
 import com.osrs_springboot_project.osrs_springboot_project.models.SkillResponse;
 import com.osrs_springboot_project.osrs_springboot_project.models.Skills;
 import com.osrs_springboot_project.osrs_springboot_project.repositories.SkillRepository;
@@ -35,5 +36,18 @@ public class SkillService {
         List<SkillResponse> skillRanks = this.getSkillRanks(skillName);
 
         return skillRanks.subList(0, topNumber);
+    }
+
+    public List<SkillResponse> getSkillRanksGreaterThanLevel(String skillName, Integer level) {
+        List<SkillResponse> skillRanks = this.getSkillRanks(skillName);
+        Integer num = 0;
+
+        for (SkillResponse skillResponse : skillRanks) {
+            if (skillResponse.getSkill().getLevel() >= level) {
+                num++;
+            }
+        }
+
+        return skillRanks.subList(0, num);
     }
 }
