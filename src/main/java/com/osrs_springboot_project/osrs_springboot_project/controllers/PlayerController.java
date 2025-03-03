@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_SKILL;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.PlayerNotFoundException;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.SkillNotFoundException;
-import com.osrs_springboot_project.osrs_springboot_project.models.Player;
-import com.osrs_springboot_project.osrs_springboot_project.models.Skill;
+import com.osrs_springboot_project.osrs_springboot_project.models.Player.Player;
+import com.osrs_springboot_project.osrs_springboot_project.models.Skill.Skill;
 import com.osrs_springboot_project.osrs_springboot_project.services.PlayerService;
 
 import org.springframework.web.bind.annotation.RequestMapping;

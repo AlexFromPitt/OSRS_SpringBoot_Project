@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.SkillNotFoundException;
-import com.osrs_springboot_project.osrs_springboot_project.models.SkillResponse;
+import com.osrs_springboot_project.osrs_springboot_project.models.Skill.SkillResponse;
 import com.osrs_springboot_project.osrs_springboot_project.services.SkillService;
 
 @RestController

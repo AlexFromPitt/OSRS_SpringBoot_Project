@@ -1,4 +1,4 @@
-package com.osrs_springboot_project.osrs_springboot_project.models;
+package com.osrs_springboot_project.osrs_springboot_project.models.Activity;
 
 import java.util.Comparator;
 

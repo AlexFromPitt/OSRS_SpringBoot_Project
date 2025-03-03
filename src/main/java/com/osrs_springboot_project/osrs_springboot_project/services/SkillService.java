@@ -1,9 +1,8 @@
 package com.osrs_springboot_project.osrs_springboot_project.services;
 
 import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_SKILL;
-import com.osrs_springboot_project.osrs_springboot_project.models.ActivityResponse;
-import com.osrs_springboot_project.osrs_springboot_project.models.SkillResponse;
-import com.osrs_springboot_project.osrs_springboot_project.models.Skills;
+import com.osrs_springboot_project.osrs_springboot_project.models.Skill.SkillResponse;
+import com.osrs_springboot_project.osrs_springboot_project.models.Skill.Skills;
 import com.osrs_springboot_project.osrs_springboot_project.repositories.SkillRepository;
 
 import java.util.ArrayList;

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.ActivityNotFoundException;
-import com.osrs_springboot_project.osrs_springboot_project.models.ActivityResponse;
+import com.osrs_springboot_project.osrs_springboot_project.models.Activity.ActivityResponse;
 import com.osrs_springboot_project.osrs_springboot_project.services.ActivityService;
 
 @RestController

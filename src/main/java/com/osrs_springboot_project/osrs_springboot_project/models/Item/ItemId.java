@@ -1,4 +1,4 @@
-package com.osrs_springboot_project.osrs_springboot_project.models;
+package com.osrs_springboot_project.osrs_springboot_project.models.Item;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,8 +9,8 @@ import lombok.Data;
 @Document(collection = "ItemIds")
 public class ItemId {
     @Id
-    private Integer id;
     private String name;
+    private Integer id;
 
     public ItemId(String name, Integer id) {
         this.id = id;

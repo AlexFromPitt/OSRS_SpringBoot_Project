@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_ACTIVITIES;
-import com.osrs_springboot_project.osrs_springboot_project.models.Activities;
-import com.osrs_springboot_project.osrs_springboot_project.models.ActivityResponse;
+import com.osrs_springboot_project.osrs_springboot_project.models.Activity.Activities;
+import com.osrs_springboot_project.osrs_springboot_project.models.Activity.ActivityResponse;
 import com.osrs_springboot_project.osrs_springboot_project.repositories.ActivityRepository;
 
 @Service

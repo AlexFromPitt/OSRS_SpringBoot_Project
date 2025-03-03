@@ -5,10 +5,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.PlayerNotFoundException;
-import com.osrs_springboot_project.osrs_springboot_project.models.Activities;
-import com.osrs_springboot_project.osrs_springboot_project.models.Player;
-import com.osrs_springboot_project.osrs_springboot_project.models.Skills;
-import com.osrs_springboot_project.osrs_springboot_project.models.Username;
+import com.osrs_springboot_project.osrs_springboot_project.models.Activity.Activities;
+import com.osrs_springboot_project.osrs_springboot_project.models.Player.Player;
+import com.osrs_springboot_project.osrs_springboot_project.models.Player.Username;
+import com.osrs_springboot_project.osrs_springboot_project.models.Skill.Skills;
 
 @Repository
 public class PlayerRepository {

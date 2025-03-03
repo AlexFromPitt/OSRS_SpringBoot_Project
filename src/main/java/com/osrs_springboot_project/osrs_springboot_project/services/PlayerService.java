@@ -14,12 +14,12 @@ import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_ACTIVITIES
 import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_SKILL;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.SkillNotFoundException;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.ValidationException;
-import com.osrs_springboot_project.osrs_springboot_project.models.Activities;
-import com.osrs_springboot_project.osrs_springboot_project.models.Activity;
-import com.osrs_springboot_project.osrs_springboot_project.models.Player;
-import com.osrs_springboot_project.osrs_springboot_project.models.Skill;
-import com.osrs_springboot_project.osrs_springboot_project.models.Skills;
-import com.osrs_springboot_project.osrs_springboot_project.models.Username;
+import com.osrs_springboot_project.osrs_springboot_project.models.Activity.Activities;
+import com.osrs_springboot_project.osrs_springboot_project.models.Activity.Activity;
+import com.osrs_springboot_project.osrs_springboot_project.models.Player.Player;
+import com.osrs_springboot_project.osrs_springboot_project.models.Player.Username;
+import com.osrs_springboot_project.osrs_springboot_project.models.Skill.Skill;
+import com.osrs_springboot_project.osrs_springboot_project.models.Skill.Skills;
 import com.osrs_springboot_project.osrs_springboot_project.repositories.PlayerRepository;
 
 @Service

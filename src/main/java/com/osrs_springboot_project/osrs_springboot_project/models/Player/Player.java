@@ -1,4 +1,4 @@
-package com.osrs_springboot_project.osrs_springboot_project.models;
+package com.osrs_springboot_project.osrs_springboot_project.models.Player;
 
 import lombok.Data;
 
@@ -7,6 +7,8 @@ import java.util.Map;
 
 import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_ACTIVITIES;
 import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_SKILL;
+import com.osrs_springboot_project.osrs_springboot_project.models.Activity.Activity;
+import com.osrs_springboot_project.osrs_springboot_project.models.Skill.Skill;
 
 @Data
 public class Player {
