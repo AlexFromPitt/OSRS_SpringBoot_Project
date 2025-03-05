@@ -1,6 +1,8 @@
 package com.osrs_springboot_project.osrs_springboot_project.services;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.osrs_springboot_project.osrs_springboot_project.converters.PriceConverter;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.ItemNotFoundException;
 import com.osrs_springboot_project.osrs_springboot_project.models.Item.ItemData;
 import com.osrs_springboot_project.osrs_springboot_project.models.Item.ItemId;
@@ -27,6 +30,9 @@ public class ItemService {
     @Autowired
     ItemRepository itemRepository;
 
+    @Autowired
+    PriceConverter priceConverter;
+
     /* Item Services */
     public Boolean getItemIDs() {
         RestTemplate restTemplate = new RestTemplate();
@@ -42,6 +48,7 @@ public class ItemService {
                 String[] rawItemId = itemIdDataList[i].split(": ");
                 rawItemId[0] = rawItemId[0].replace(" ", "_");
                 ItemId itemId = new ItemId(rawItemId[0].substring(1, rawItemId[0].length()-1), Integer.parseInt(rawItemId[1]));
+                itemId.setName(itemId.getName().toUpperCase());
 
                 this.itemRepository.save(itemId);
             }
@@ -58,7 +65,7 @@ public class ItemService {
         ItemData itemData = null;
         ItemId itemId = null;
 
-        itemId = itemRepository.findById(itemName).orElseThrow(() -> new ItemNotFoundException(itemName));
+        itemId = itemRepository.findById(itemName.toUpperCase()).orElseThrow(() -> new ItemNotFoundException(itemName));
 
         String url = OSRS_ITEM_DATA_URL + itemId.getId();
 
@@ -75,6 +82,11 @@ public class ItemService {
 
             // Deserialize the response body into ItemResponse (assuming it's a valid JSON)
             ItemResponse itemResponse = new ObjectMapper().readValue(response.getBody(), ItemResponse.class);
+            String fixedName = Arrays.stream(itemResponse.getItem().getName().split(" "))
+                .map(word -> Character.toUpperCase(word.charAt(0)) + word.substring(1))
+                .collect(Collectors.joining(" "));
+            itemResponse.getItem().setName(fixedName);
+            System.out.println(itemResponse.getItem().getName());
             return itemResponse.getItem();
 
         } catch (Exception e) {
@@ -102,14 +114,14 @@ public class ItemService {
     }
 
     // public ItemPriceData extractItemPriceData(ItemData itemData) {
-        // ItemPriceData priceData = null;
-        // priceData.setId(itemData.getId()); // Link by ID
-        // priceData.setCurrentPrice(itemData.getCurrentPrice());
-        // priceData.setTodayPrice(itemData.getTodayPrice());
-        // priceData.setDay30(itemData.getDay30());
-        // priceData.setDay90(itemData.getDay90());
-        // priceData.setDay180(itemData.getDay180());
+    //     ItemPriceData priceData = null;
+    //     priceData.setId(itemData.getId()); // Link by ID
+    //     priceData.setCurrentPrice(itemData.getCurrentPrice());
+    //     priceData.setTodayPrice(itemData.getTodayPrice());
+    //     priceData.setDay30(itemData.getDay30());
+    //     priceData.setDay90(itemData.getDay90());
+    //     priceData.setDay180(itemData.getDay180());
 
-        // return pricedata;
+    //     return pricedata;
     // }
 }

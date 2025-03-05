@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class ItemPriceData {
     private int id;
+    private String name;
     private Price currentPrice;
     private Price todayPrice;
     private Trend day30;
