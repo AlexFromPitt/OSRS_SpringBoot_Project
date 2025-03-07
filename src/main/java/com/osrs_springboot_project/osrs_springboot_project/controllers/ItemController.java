@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.ItemNotFoundException;
 import com.osrs_springboot_project.osrs_springboot_project.models.Item.ItemInfoData;
+import com.osrs_springboot_project.osrs_springboot_project.models.Item.ItemPriceData;
 import com.osrs_springboot_project.osrs_springboot_project.services.ItemService;
 
 @RestController
@@ -30,6 +31,16 @@ public class ItemController {
     @GetMapping("/getItemInfoData/{itemName}")
     public ResponseEntity<ItemInfoData> getItemInfoData(@PathVariable String itemName) {
         ItemInfoData itemInfo = this.itemService.getItemInfoData(itemName);
+        if (itemInfo != null) {
+            return ResponseEntity.ok(itemInfo);
+        } else {
+            throw new ItemNotFoundException(itemName);
+        }
+    }
+
+    @GetMapping("/getItemPriceData/{itemName}")
+    public ResponseEntity<ItemPriceData> getItemPriceData(@PathVariable String itemName) {
+        ItemPriceData itemInfo = this.itemService.getItemPriceData(itemName);
         if (itemInfo != null) {
             return ResponseEntity.ok(itemInfo);
         } else {

@@ -22,7 +22,7 @@ public class PriceConverter implements Converter<String, Integer> {
             // Check to see if the string needs modified.
             // Start with the beginning:
             boolean valid = false;
-            while (!valid) {
+            while (!valid && start < source.length()) {
                 c = source.charAt(start);
                 if (charList.contains(c)) valid = true;
                 else start++;
@@ -30,7 +30,7 @@ public class PriceConverter implements Converter<String, Integer> {
 
             // Now check the end:
             valid = false;
-            while (!valid) {
+            while (!valid && start < source.length()) {
                 c = Character.toLowerCase(source.charAt(end-1));
                 if (c == 'm') {
                     multiplyByMillion = true;
@@ -38,13 +38,14 @@ public class PriceConverter implements Converter<String, Integer> {
                 }
                 else if (c == 'k') {
                     multiplyByThousand = true;
+                    end--;
                 }
                 else if (charList.contains(c)) valid = true;
+                else end--;
             }
 
             if (multiplyByMillion) {
                 value = Double.parseDouble(source.substring(start, end));
-                System.out.println(value);
                 value = value * 1000000;
                 return value.intValue();
             } else if (multiplyByThousand) {

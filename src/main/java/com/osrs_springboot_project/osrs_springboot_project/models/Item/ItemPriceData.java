@@ -11,16 +11,4 @@ public class ItemPriceData {
     private Trend day30;
     private Trend day90;
     private Trend day180;
-
-    @Data
-    public static class Price {
-        private String trend;
-        private String price;
-    }
-
-    @Data
-    public static class Trend {
-        private String trend;
-        private String change;
-    }
 }

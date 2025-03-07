@@ -20,6 +20,7 @@ import com.osrs_springboot_project.osrs_springboot_project.models.Item.ItemId;
 import com.osrs_springboot_project.osrs_springboot_project.models.Item.ItemInfoData;
 import com.osrs_springboot_project.osrs_springboot_project.models.Item.ItemPriceData;
 import com.osrs_springboot_project.osrs_springboot_project.models.Item.ItemResponse;
+import com.osrs_springboot_project.osrs_springboot_project.models.Item.Price;
 import com.osrs_springboot_project.osrs_springboot_project.repositories.ItemRepository;
 
 @Service
@@ -86,7 +87,6 @@ public class ItemService {
                 .map(word -> Character.toUpperCase(word.charAt(0)) + word.substring(1))
                 .collect(Collectors.joining(" "));
             itemResponse.getItem().setName(fixedName);
-            System.out.println(itemResponse.getItem().getName());
             return itemResponse.getItem();
 
         } catch (Exception e) {
@@ -99,8 +99,13 @@ public class ItemService {
         return extractItemInfo(this.getItemData(itemName));
     }
 
-    public ItemInfoData extractItemInfo(ItemData itemData) {
+    public ItemPriceData getItemPriceData(String itemName) {
+        return extractItemPriceData(this.getItemData(itemName));
+    }
+
+    private ItemInfoData extractItemInfo(ItemData itemData) {
         ItemInfoData itemInfo = new ItemInfoData();
+
         itemInfo.setId(itemData.getId());
         itemInfo.setIcon(itemData.getIcon());
         itemInfo.setIconLarge(itemData.getIconLarge());
@@ -113,15 +118,18 @@ public class ItemService {
         return itemInfo;
     }
 
-    // public ItemPriceData extractItemPriceData(ItemData itemData) {
-    //     ItemPriceData priceData = null;
-    //     priceData.setId(itemData.getId()); // Link by ID
-    //     priceData.setCurrentPrice(itemData.getCurrentPrice());
-    //     priceData.setTodayPrice(itemData.getTodayPrice());
-    //     priceData.setDay30(itemData.getDay30());
-    //     priceData.setDay90(itemData.getDay90());
-    //     priceData.setDay180(itemData.getDay180());
+    private ItemPriceData extractItemPriceData(ItemData itemData) {
+        ItemPriceData priceData = new ItemPriceData();
 
-    //     return pricedata;
-    // }
+        priceData.setId(itemData.getId());
+        priceData.setName(itemData.getName());
+        priceData.setCurrentPrice(new Price(itemData.getCurrentPrice().getTrend(), this.priceConverter.convert(itemData.getCurrentPrice().getPrice())));
+        System.out.println(itemData.getTodayPrice());
+        priceData.setTodayPrice(new Price(itemData.getTodayPrice().getTrend(), this.priceConverter.convert(itemData.getTodayPrice().getPrice())));
+        priceData.setDay30(itemData.getDay30());
+        priceData.setDay90(itemData.getDay90());
+        priceData.setDay180(itemData.getDay180());
+
+        return priceData;
+    }
 }

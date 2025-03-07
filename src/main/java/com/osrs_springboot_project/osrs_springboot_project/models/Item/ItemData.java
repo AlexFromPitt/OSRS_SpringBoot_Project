@@ -60,13 +60,4 @@ public class ItemData {
         @JsonProperty("price")
         private String price;
     }
-
-    @Data
-    public static class Trend {
-        @JsonProperty("trend")
-        private String trend;
-
-        @JsonProperty("change")
-        private String change;
-    }
 }
