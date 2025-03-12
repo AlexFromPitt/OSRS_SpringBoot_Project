@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,6 +22,8 @@ import com.osrs_springboot_project.osrs_springboot_project.models.Player.Usernam
 import com.osrs_springboot_project.osrs_springboot_project.models.Skill.Skill;
 import com.osrs_springboot_project.osrs_springboot_project.models.Skill.Skills;
 import com.osrs_springboot_project.osrs_springboot_project.repositories.PlayerRepository;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class PlayerService {
@@ -71,6 +74,27 @@ public class PlayerService {
         allSkillsList.sort(new Skill.SkillComparator());
 
         return allSkillsList.subList(0, numTopSkills);
+    }
+
+    @PostConstruct
+    public void getPlayerDataOnStartup() {
+        updatePlayerDbData();
+        return;
+    }
+
+    @Scheduled(fixedRate = 3600000)
+    public void getPlayerDataHourly() {
+        updatePlayerDbData();
+        return;
+    }
+    
+    public void updatePlayerDbData() {
+        List<Username> usernames = playerRepository.getAllUsernames();
+
+        for (Username user : usernames) {
+            fetchPlayerData(user.getUsername());
+        }
+        return;
     }
 
     /* Validation Functions */

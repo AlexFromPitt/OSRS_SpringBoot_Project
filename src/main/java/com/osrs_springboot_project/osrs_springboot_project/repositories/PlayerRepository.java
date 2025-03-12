@@ -1,5 +1,7 @@
 package com.osrs_springboot_project.osrs_springboot_project.repositories;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,5 +55,9 @@ public class PlayerRepository {
 
     public Boolean doesPlayerExist(String username) {
         return this.usernameRepository.existsById(username);
-    } 
+    }
+
+    public List<Username> getAllUsernames() {
+        return this.usernameRepository.findAll();
+    }
 }
