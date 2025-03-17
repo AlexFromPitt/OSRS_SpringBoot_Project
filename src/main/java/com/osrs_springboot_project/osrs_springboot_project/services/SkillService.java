@@ -1,10 +1,12 @@
 package com.osrs_springboot_project.osrs_springboot_project.services;
 
+import com.osrs_springboot_project.osrs_springboot_project.controllers.ActivityController;
 import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_SKILL;
 import com.osrs_springboot_project.osrs_springboot_project.models.Skill.SkillResponse;
 import com.osrs_springboot_project.osrs_springboot_project.models.Skill.Skills;
 import com.osrs_springboot_project.osrs_springboot_project.repositories.SkillRepository;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,8 +16,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class SkillService {
 
+    private final ActivityController activityController;
+
     @Autowired
     SkillRepository skillRepository;
+
+    SkillService(ActivityController activityController) {
+        this.activityController = activityController;
+    }
 
     public List<SkillResponse> getSkillRanks(String skillName) {
         List<Skills> skillsList = this.skillRepository.findAll();
@@ -48,5 +56,10 @@ public class SkillService {
         }
 
         return skillRanks.subList(0, num);
+    }
+
+    // Validation Functions
+    public boolean validateSkillName(String skillName) {
+        return Arrays.stream(OSRS_SKILL.values()).anyMatch(s -> s.name().equals(skillName.toUpperCase()));
     }
 }
