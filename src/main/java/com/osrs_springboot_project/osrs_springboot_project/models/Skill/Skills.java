@@ -3,22 +3,18 @@ package com.osrs_springboot_project.osrs_springboot_project.models.Skill;
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_SKILL;
 
 import lombok.Data;
 
 @Data
-@Document(collection = "Skills")
 public class Skills {
     @Id
     private String username;
 
     private Skill overall;
 
-    @Field("skills")
     private Map<OSRS_SKILL, Skill> skills;
 
     public Skills() {}
