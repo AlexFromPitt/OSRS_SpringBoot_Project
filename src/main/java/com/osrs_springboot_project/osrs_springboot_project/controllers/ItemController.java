@@ -30,7 +30,8 @@ public class ItemController {
 
     @GetMapping("/getItemInfoData/{itemName}")
     public ResponseEntity<ItemInfoData> getItemInfoData(@PathVariable String itemName) {
-        ItemInfoData itemInfo = this.itemService.getItemInfoData(itemName);
+        String processedItemName = itemName.replace(" ", "_");
+        ItemInfoData itemInfo = this.itemService.getItemInfoData(processedItemName);
         if (itemInfo != null) {
             return ResponseEntity.ok(itemInfo);
         } else {
@@ -40,7 +41,8 @@ public class ItemController {
 
     @GetMapping("/getItemPriceData/{itemName}")
     public ResponseEntity<ItemPriceData> getItemPriceData(@PathVariable String itemName) {
-        ItemPriceData itemInfo = this.itemService.getItemPriceData(itemName);
+        String processedItemName = itemName.replace(" ", "_");
+        ItemPriceData itemInfo = this.itemService.getItemPriceData(processedItemName);
         if (itemInfo != null) {
             return ResponseEntity.ok(itemInfo);
         } else {
