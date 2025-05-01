@@ -1,7 +1,9 @@
 package com.osrs_springboot_project.osrs_springboot_project.services;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.osrs_springboot_project.osrs_springboot_project.converters.PriceConverter;
-import com.osrs_springboot_project.osrs_springboot_project.exceptions.ItemNotFoundException;
 import com.osrs_springboot_project.osrs_springboot_project.models.Item.ItemData;
 import com.osrs_springboot_project.osrs_springboot_project.models.Item.ItemId;
 import com.osrs_springboot_project.osrs_springboot_project.models.Item.ItemInfoData;
@@ -61,13 +62,9 @@ public class ItemService {
         return true;
     }
 
-    public ItemData getItemData(String itemName) {
+    public ItemData getItemData(ItemId itemId) {
         RestTemplate restTemplate = new RestTemplate();
         ItemData itemData = null;
-        ItemId itemId = null;
-
-        itemId = itemRepository.findById(itemName.toUpperCase()).orElseThrow(() -> new ItemNotFoundException(itemName));
-
         String url = OSRS_ITEM_DATA_URL + itemId.getId();
 
         try {
@@ -95,12 +92,34 @@ public class ItemService {
         }
     }
 
-    public ItemInfoData getItemInfoData(String itemName) {
-        return extractItemInfo(this.getItemData(itemName));
+    public ItemInfoData getItemInfoData(ItemId itemId) {
+        return extractItemInfo(this.getItemData(itemId));
     }
 
-    public ItemPriceData getItemPriceData(String itemName) {
-        return extractItemPriceData(this.getItemData(itemName));
+    public ItemPriceData getItemPriceData(ItemId itemId) {
+        return extractItemPriceData(this.getItemData(itemId));
+    }
+
+    public List<ItemInfoData> queryForItemData(String itemName) {
+        List<ItemId> itemIdList = this.itemRepository.findByNameContainingIgnoreCase(itemName);
+        List<ItemInfoData> itemDataList = new ArrayList<ItemInfoData>();
+
+        for (ItemId itemId : itemIdList) {
+            itemDataList.add(this.getItemInfoData(itemId));
+        }
+
+        return itemDataList;
+    }
+
+    public List<ItemPriceData> queryForItemPriceData(String itemName) {
+        List<ItemId> itemIdList = this.itemRepository.findByNameContainingIgnoreCase(itemName);
+        List<ItemPriceData> itemPriceDataList = new ArrayList<ItemPriceData>();
+
+        for (ItemId itemId : itemIdList) {
+            itemPriceDataList.add(this.getItemPriceData(itemId));
+        }
+
+        return itemPriceDataList;
     }
 
     private ItemInfoData extractItemInfo(ItemData itemData) {

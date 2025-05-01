@@ -1,5 +1,7 @@
 package com.osrs_springboot_project.osrs_springboot_project.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +31,9 @@ public class ItemController {
     }
 
     @GetMapping("/getItemInfoData/{itemName}")
-    public ResponseEntity<ItemInfoData> getItemInfoData(@PathVariable String itemName) {
+    public ResponseEntity<List<ItemInfoData>> getItemInfoData(@PathVariable String itemName) {
         String processedItemName = itemName.replace(" ", "_");
-        ItemInfoData itemInfo = this.itemService.getItemInfoData(processedItemName);
+        List<ItemInfoData> itemInfo = this.itemService.queryForItemData(processedItemName);
         if (itemInfo != null) {
             return ResponseEntity.ok(itemInfo);
         } else {
@@ -40,9 +42,9 @@ public class ItemController {
     }
 
     @GetMapping("/getItemPriceData/{itemName}")
-    public ResponseEntity<ItemPriceData> getItemPriceData(@PathVariable String itemName) {
+    public ResponseEntity<List<ItemPriceData>> getItemPriceData(@PathVariable String itemName) {
         String processedItemName = itemName.replace(" ", "_");
-        ItemPriceData itemInfo = this.itemService.getItemPriceData(processedItemName);
+        List<ItemPriceData> itemInfo = this.itemService.queryForItemPriceData(processedItemName);
         if (itemInfo != null) {
             return ResponseEntity.ok(itemInfo);
         } else {
