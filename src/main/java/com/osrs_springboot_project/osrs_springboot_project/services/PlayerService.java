@@ -27,7 +27,6 @@ import com.osrs_springboot_project.osrs_springboot_project.repositories.PlayerRe
 public class PlayerService {
 
     private static final String OSRS_PLAYER_INFO_URL = "https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws?player=";
-    private static final int NUM_SKILLS = 24;
 
     @Autowired
     PlayerRepository playerRepository;
@@ -131,7 +130,7 @@ public class PlayerService {
         String url = OSRS_PLAYER_INFO_URL + username;
         OSRS_SKILL[] skillNames = OSRS_SKILL.values();
         OSRS_ACTIVITIES[] activityNames = OSRS_ACTIVITIES.values();
-        Skill[] skillList = new Skill[NUM_SKILLS];
+        Skill[] skillList = new Skill[skillNames.length];
         Activity[] activityList = new Activity[activityNames.length];
         int idx = 0; // Will be used to maintain index of playerData.
 
@@ -149,6 +148,7 @@ public class PlayerService {
             // Loop through the Activities
             for (int i=0; i < activityNames.length; i++) {
                 String[] activityData = playerData[idx++].split(",");
+                System.out.println("Activity: " + activityNames[i] + " Data: " + activityData[0]);
                 activityList[i] = buildActivity(activityNames[i], activityData);
             }
 

@@ -1,6 +1,7 @@
 package com.osrs_springboot_project.osrs_springboot_project.enums;
 
 public enum OSRS_ACTIVITIES {
+    GRID_POINTS("Grid_Points"),
     LEAGUE_POINTS("League_Points"),
     DEADMAN_POINTS("Deadman_Points"),
     BOUNTY_HUNTER_HUNTER("Bounty_Hunter_Hunter"),
@@ -26,6 +27,7 @@ public enum OSRS_ACTIVITIES {
     ARAXXOR("Araxxor"),
     ARTIO("Artio"),
     BARROWS_CHESTS("Barrows_Chests"),
+    BRUTUS("Brutus"),
     BRYOPHYTA("Bryophyta"),
     CALLISTO("Callisto"),
     CALVARION("Calvarion"),
@@ -41,6 +43,7 @@ public enum OSRS_ACTIVITIES {
     DAGANNOTH_REX("Dagannoth_Rex"),
     DAGANNOTH_SUPREME("Dagannoth_Supreme"),
     DERANGED_ARCHAEOLOGIST("Deranged_Archaeologist"),
+    DOOM_OF_MOKHAIOTL("Doom_of_Mokhaiotl"),
     DUKE_SUCELLUS("Duke_Sucellus"),
     GENERAL_GRAARDOR("General_Graardor"),
     GIANT_MOLE("Giant_Mole"),
@@ -61,6 +64,7 @@ public enum OSRS_ACTIVITIES {
     SARACHNIS("Sarachnis"),
     SCORPIA("Scorpia"),
     SCURRIUS("Scurrius"),
+    SHELLBANE_GRYPHON("Shellbane_Gryphon"),
     SKOTIZO("Skotizo"),
     SOL_HEREDIT("Sol_Heredit"),
     SPINDEL("Spindel"),
@@ -83,6 +87,7 @@ public enum OSRS_ACTIVITIES {
     VETION("Vet_ion"),
     VORKATH("Vorkath"),
     WINTERTODT("Wintertodt"),
+    YAMA("Yama"),
     ZALCANO("Zalcano"),
     ZULRAH("Zulrah");
 

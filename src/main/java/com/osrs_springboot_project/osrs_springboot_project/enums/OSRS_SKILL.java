@@ -25,7 +25,8 @@ public enum OSRS_SKILL {
     FARMING("Farming"),
     RUNECRAFTING("Runecrafting"),
     HUNTER("Hunter"),
-    CONSTRUCTION("Construction");
+    CONSTRUCTION("Construction"),
+    SAILING("Sailing");
 
 
     private final String skillName;
