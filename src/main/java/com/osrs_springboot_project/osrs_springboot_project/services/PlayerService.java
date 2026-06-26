@@ -45,6 +45,10 @@ public class PlayerService {
         } else return false;
     }
 
+    public List<Username> getPlayerList() {
+        return this.playerRepository.getAllUsernames();
+    }
+
     public Skill getPlayerSkillData(String username, String skillName) {
         this.validateUsername(username);
 

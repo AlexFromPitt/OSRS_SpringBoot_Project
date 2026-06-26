@@ -6,6 +6,7 @@ import com.osrs_springboot_project.osrs_springboot_project.enums.OSRS_SKILL;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.PlayerNotFoundException;
 import com.osrs_springboot_project.osrs_springboot_project.exceptions.SkillNotFoundException;
 import com.osrs_springboot_project.osrs_springboot_project.models.Player.Player;
+import com.osrs_springboot_project.osrs_springboot_project.models.Player.Username;
 import com.osrs_springboot_project.osrs_springboot_project.models.Skill.Skill;
 import com.osrs_springboot_project.osrs_springboot_project.services.PlayerService;
 
@@ -112,8 +113,7 @@ public class PlayerController {
      * # Function Name: getPlayerTopSkillsData
      * # Description: 
      * #   GET Request function that is responsible for getting an Old School Runescape
-     * #   player's Top Skills. Top Skills means Skills with the Highest Level/Experience
-     * #   compared to the player's other Skills.
+     * #   player's Top Skills.
      * #
      * # Parameters:
      * #   @param <username> - Username to be used when querying for the OSRS Data.
@@ -133,6 +133,28 @@ public class PlayerController {
             return ResponseEntity.ok(skillList);
         } else {
             throw new PlayerNotFoundException(username);
+        }
+    }
+
+    /**
+     * #################################################################################
+     * # Function Name: getPlayerList
+     * # Description: 
+     * #   GET Request function that is responsible for getting a list of players
+     * #   currently in the database.
+     * #
+     * # Returns:
+     * #   List of player usernames currently in the dartabase.
+     * #
+     * #################################################################################
+     */
+    @GetMapping("/getPlayerList/")
+    public ResponseEntity<List<String>> getPlayerList() {
+        List<String> skillList = this.playerService.getPlayerList().stream().map(Username::getUsername).toList();
+        if (skillList != null) {
+            return ResponseEntity.ok(skillList);
+        } else {
+            throw new RuntimeException("Player list not found");
         }
     }
 
